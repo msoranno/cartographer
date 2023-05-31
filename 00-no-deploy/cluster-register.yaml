@@ -1,0 +1,485 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  creationTimestamp: "2023-05-30T16:03:43Z"
+  generateName: mock-cluster-register-run-
+  generation: 1
+  labels:
+    app.iscp/component: x-cicd-pipelines
+    app.iscp/managed-by: iscp
+    app.iscp/management: platform
+    carto.run/cluster-template-name: mock-cluster-register
+    carto.run/resource-name: cluster-register
+    carto.run/supply-chain-name: mock-cluster-register-unregister
+    carto.run/template-kind: ClusterSourceTemplate
+    carto.run/template-lifecycle: tekton
+    carto.run/workload-name: mock-cluster-register-unregister
+    carto.run/workload-namespace: x-pipes
+    tekton.dev/pipeline: instance-cluster-register
+  name: mock-cluster-register-run-89nnh
+  namespace: x-pipes
+  ownerReferences:
+  - apiVersion: carto.run/v1alpha1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Workload
+    name: mock-cluster-register-unregister
+    uid: a215232a-0be4-41c8-9207-34f93a472ba9
+  resourceVersion: "326084967"
+  uid: 46881555-fc32-4a4a-b565-9fb2869616f9
+spec:
+  params:
+  - name: provider_id
+    value: ibc
+  - name: cluster_type
+    value: k8s
+  - name: account_id
+    value: lab
+  - name: tenant_id
+    value: tst
+  - name: block_num
+    value: "0900"
+  - name: cluster_num
+    value: "01"
+  - name: task_name
+    value: instance-cluster-register
+  - name: xterm_user
+    value: msoranno
+  - name: iam_group_list
+    value: admins_imf01,admins_mad01,admins_tst01
+  - name: delivery_group
+    value: tst01
+  pipelineRef:
+    name: instance-cluster-register
+  taskRunTemplate:
+    serviceAccountName: cicd-pipelines-sa
+  timeouts:
+    pipeline: 1h0m0s
+  workspaces:
+  - name: cicd-cache
+    persistentVolumeClaim:
+      claimName: x-cicd-cache
+status:
+  childReferences:
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: mock-cluster-register-run-89nnh-get-git-x-cicd-scripts
+    pipelineTaskName: get-git-x-cicd-scripts
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: mock-cluster-register-run-89nnh-get-git-x-cmdb
+    pipelineTaskName: get-git-x-cmdb
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: mock-cluster-register-run-89nnh-control-register
+    pipelineTaskName: control-register
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: mock-cluster-register-run-89nnh-redis-integration
+    pipelineTaskName: redis-integration
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: mock-cluster-register-run-89nnh-render-process
+    pipelineTaskName: render-process
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: mock-cluster-register-run-89nnh-update-dns-zones-repo
+    pipelineTaskName: update-dns-zones-repo
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: mock-cluster-register-run-89nnh-dns-integration
+    pipelineTaskName: dns-integration
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: mock-cluster-register-run-89nnh7fcda77938ab645d273670b115e17af9
+    pipelineTaskName: write-default-cluster-credentials
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: mock-cluster-register-run-89nnh-get-gitops-control
+    pipelineTaskName: get-gitops-control
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: mock-cluster-register-run-89nnh-render-gitops-control
+    pipelineTaskName: render-gitops-control
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: mock-cluster-register-run-89nnh-commit-push
+    pipelineTaskName: commit-push
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: mock-cluster-register-run-89nnh-create-gitops-applications-repo
+    pipelineTaskName: create-gitops-applications-repo
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: mock-cluster-register-run-89nnh-cleanup
+    pipelineTaskName: cleanup
+  completionTime: "2023-05-30T16:05:20Z"
+  conditions:
+  - lastTransitionTime: "2023-05-30T16:05:20Z"
+    message: 'Tasks Completed: 13 (Failed: 0, Cancelled 0), Skipped: 0'
+    reason: Succeeded
+    status: "True"
+    type: Succeeded
+  pipelineSpec:
+    finally:
+    - name: cleanup
+      params:
+      - name: PATH
+        value: 46881555-fc32-4a4a-b565-9fb2869616f9*
+      taskRef:
+        kind: Task
+        name: delete-directory
+      workspaces:
+      - name: volume
+        workspace: cicd-cache
+    params:
+    - description: Provider Id (i.e. ibc,aws,azr,gcp,onp)
+      name: provider_id
+      type: string
+    - description: Cluster Type Id (i.e. k8s, ocp)
+      name: cluster_type
+      type: string
+    - description: Account Id (i.e. ibm)
+      name: account_id
+      type: string
+    - description: Tenant Id (i.e. dev)
+      name: tenant_id
+      type: string
+    - description: Block Num (i.e. 0001)
+      name: block_num
+      type: string
+    - description: Cluster Num (i.e. 01)
+      name: cluster_num
+      type: string
+    - description: Name to identify the task
+      name: task_name
+      type: string
+    - description: xterm user
+      name: xterm_user
+      type: string
+    - description: Group list that belongs to xterm user
+      name: iam_group_list
+      type: string
+    - description: Delivery Group
+      name: delivery_group
+      type: string
+    - default: v4
+      description: Bootstrap version, platform related (i.e. v4)
+      name: bootstrap_version
+      type: string
+    - default: cluster-register
+      description: Action to perform (cluster-register)
+      name: operation
+      type: string
+    tasks:
+    - name: get-git-x-cicd-scripts
+      params:
+      - name: SECRET_TOKEN_REF
+        value: x-robot-github
+      - name: HOST
+        value: github.kyndryl.net
+      - name: REPOSITORY
+        value: iscp-dev-eu/iscp-x-cicd-scripts
+      - name: BRANCH
+        value: develop
+      retries: 5
+      taskRef:
+        kind: Task
+        name: git-clone
+      workspaces:
+      - name: repository
+        subPath: 46881555-fc32-4a4a-b565-9fb2869616f9_cicd-scripts
+        workspace: cicd-cache
+    - name: get-git-x-cmdb
+      params:
+      - name: SECRET_TOKEN_REF
+        value: x-robot-github
+      - name: HOST
+        value: github.kyndryl.net
+      - name: REPOSITORY
+        value: iscp-dev-eu/iscp-x-cmdb-lab-eu
+      - name: BRANCH
+        value: develop
+      retries: 5
+      taskRef:
+        kind: Task
+        name: git-clone
+      workspaces:
+      - name: repository
+        subPath: 46881555-fc32-4a4a-b565-9fb2869616f9_cmdb
+        workspace: cicd-cache
+    - name: control-register
+      params:
+      - name: bootstrap_version
+        value: v4
+      - name: operation
+        value: cluster-register
+      - name: provider_id
+        value: ibc
+      - name: account_id
+        value: lab
+      - name: tenant_id
+        value: tst
+      - name: block_num
+        value: "0900"
+      - name: cluster_num
+        value: "01"
+      - name: xterm_user
+        value: msoranno
+      - name: iam_group_list
+        value: admins_imf01,admins_mad01,admins_tst01
+      - name: delivery_group
+        value: tst01
+      runAfter:
+      - get-git-x-cicd-scripts
+      - get-git-x-cmdb
+      taskRef:
+        kind: Task
+        name: control-register-unregister
+      workspaces:
+      - name: git-x-cicd-scripts
+        subPath: 46881555-fc32-4a4a-b565-9fb2869616f9_cicd-scripts
+        workspace: cicd-cache
+      - name: git-x-cmdb
+        subPath: 46881555-fc32-4a4a-b565-9fb2869616f9_cmdb
+        workspace: cicd-cache
+    - name: redis-integration
+      params:
+      - name: bootstrap_version
+        value: v4
+      - name: operation
+        value: cluster-register
+      - name: provider_id
+        value: ibc
+      - name: cluster_type
+        value: k8s
+      - name: account_id
+        value: lab
+      - name: tenant_id
+        value: tst
+      - name: block_num
+        value: "0900"
+      - name: cluster_num
+        value: "01"
+      runAfter:
+      - control-register
+      taskRef:
+        kind: Task
+        name: redis-integration
+      workspaces:
+      - name: git-x-cicd-scripts
+        subPath: 46881555-fc32-4a4a-b565-9fb2869616f9_cicd-scripts
+        workspace: cicd-cache
+      - name: git-x-cmdb
+        subPath: 46881555-fc32-4a4a-b565-9fb2869616f9_cmdb
+        workspace: cicd-cache
+    - name: render-process
+      params:
+      - name: bootstrap_version
+        value: v4
+      - name: operation
+        value: cluster-register
+      - name: provider_id
+        value: ibc
+      - name: account_id
+        value: lab
+      - name: tenant_id
+        value: tst
+      - name: block_num
+        value: "0900"
+      - name: cluster_num
+        value: "01"
+      - name: xterm_user
+        value: msoranno
+      - name: iam_group_list
+        value: admins_imf01,admins_mad01,admins_tst01
+      - name: delivery_group
+        value: tst01
+      runAfter:
+      - redis-integration
+      taskRef:
+        kind: Task
+        name: render-process
+      workspaces:
+      - name: git-x-cicd-scripts
+        subPath: 46881555-fc32-4a4a-b565-9fb2869616f9_cicd-scripts
+        workspace: cicd-cache
+      - name: git-x-cmdb
+        subPath: 46881555-fc32-4a4a-b565-9fb2869616f9_cmdb
+        workspace: cicd-cache
+    - name: update-dns-zones-repo
+      params:
+      - name: bootstrap_version
+        value: v4
+      - name: operation
+        value: cluster-register
+      - name: provider_id
+        value: ibc
+      - name: account_id
+        value: lab
+      - name: tenant_id
+        value: tst
+      - name: block_num
+        value: "0900"
+      - name: cluster_num
+        value: "01"
+      - name: cluster_type
+        value: k8s
+      runAfter:
+      - redis-integration
+      taskRef:
+        kind: Task
+        name: update-dns-zones-repo
+      workspaces:
+      - name: git-x-cicd-scripts
+        subPath: 46881555-fc32-4a4a-b565-9fb2869616f9_cicd-scripts
+        workspace: cicd-cache
+      - name: git-x-cmdb
+        subPath: 46881555-fc32-4a4a-b565-9fb2869616f9_cmdb
+        workspace: cicd-cache
+    - name: dns-integration
+      params:
+      - name: bootstrap_version
+        value: v4
+      - name: operation
+        value: cluster-register
+      - name: provider_id
+        value: ibc
+      - name: account_id
+        value: lab
+      - name: tenant_id
+        value: tst
+      - name: block_num
+        value: "0900"
+      - name: cluster_num
+        value: "01"
+      runAfter:
+      - update-dns-zones-repo
+      taskRef:
+        kind: Task
+        name: dns-integration
+      workspaces:
+      - name: git-x-cicd-scripts
+        subPath: 46881555-fc32-4a4a-b565-9fb2869616f9_cicd-scripts
+        workspace: cicd-cache
+      - name: git-x-cmdb
+        subPath: 46881555-fc32-4a4a-b565-9fb2869616f9_cmdb
+        workspace: cicd-cache
+    - name: write-default-cluster-credentials
+      params:
+      - name: OVERWRITE
+        value: "false"
+      - name: SECRET_PATH
+        value: lab/tst/ibc-lab-tst-0900/k8s_clusters/ibc-lab-tst-0900-k01
+      - name: SECRET_DATA
+        value: |
+          {
+            "ca_cert": "",
+            "iscp_sa_token": "",
+            "kubeconfig": "",
+            "server": ""
+          }
+      runAfter:
+      - control-register
+      taskRef:
+        kind: Task
+        name: vault-write-secret
+    - name: get-gitops-control
+      params:
+      - name: SECRET_TOKEN_REF
+        value: x-robot-github
+      - name: HOST
+        value: github.kyndryl.net
+      - name: REPOSITORY
+        value: iscp-dev-eu/iscp-x-gitops-control-lab-eu
+      - name: BRANCH
+        value: main
+      runAfter:
+      - control-register
+      taskRef:
+        kind: Task
+        name: git-clone
+      workspaces:
+      - name: repository
+        subPath: 46881555-fc32-4a4a-b565-9fb2869616f9_repository
+        workspace: cicd-cache
+    - name: render-gitops-control
+      params:
+      - name: GIT_REFERENCE
+        value: HEAD
+      - name: DATA_INSTANCE_NAME
+        value: lab-eu
+      - name: DATA_MT_DOMAIN
+        value: d-iscp.net
+      - name: DATA_MT_SUBDOMAIN
+        value: lab.eu
+      - name: DATA_ACCOUNT
+        value: lab
+      - name: DATA_TENANT
+        value: tst
+      - name: DATA_BLOCK
+        value: "0900"
+      - name: DATA_CLUSTER_PROVIDER
+        value: ibc
+      - name: DATA_DELIVERY_GROUP
+        value: tst01
+      - name: DATA_GIT_SERVER
+        value: github.kyndryl.net
+      - name: DATA_GIT_ORGANIZATION
+        value: iscp-dev-eu
+      runAfter:
+      - get-gitops-control
+      taskRef:
+        kind: Task
+        name: copier-render
+      workspaces:
+      - name: template
+        subPath: 46881555-fc32-4a4a-b565-9fb2869616f9_repository
+        workspace: cicd-cache
+      - name: destination
+        subPath: 46881555-fc32-4a4a-b565-9fb2869616f9_repository
+        workspace: cicd-cache
+    - name: commit-push
+      params:
+      - name: USERNAME
+        value: x-robot
+      - name: EMAIL
+        value: x-robot@kyndryl.com
+      - name: SECRET_TOKEN_REF
+        value: x-robot-github
+      - name: HOST
+        value: github.kyndryl.net
+      - name: BRANCH
+        value: main
+      - name: COMMIT_MESSAGE
+        value: Add cluster config ibc-lab-tst-0900-k01
+      runAfter:
+      - render-gitops-control
+      taskRef:
+        kind: Task
+        name: git-commit-push
+      workspaces:
+      - name: repository
+        subPath: 46881555-fc32-4a4a-b565-9fb2869616f9_repository
+        workspace: cicd-cache
+    - name: create-gitops-applications-repo
+      params:
+      - name: HOST
+        value: github.kyndryl.net
+      - name: SECRET_TOKEN_REF
+        value: x-robot-github
+      - name: REPOSITORY_NAME
+        value: iscp-gitops-applications-ibc-lab-tst-0900-k01
+      - name: REPOSITORY_ORGANIZATION
+        value: iscp-dev-eu
+      - name: FAIL_ON_EXISTS
+        value: "false"
+      runAfter:
+      - control-register
+      taskRef:
+        kind: Task
+        name: github-create-repo
+    workspaces:
+    - description: The folder to store data
+      name: cicd-cache
+  startTime: "2023-05-30T16:03:44Z"

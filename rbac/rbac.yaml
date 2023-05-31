@@ -1,0 +1,50 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mock-testing-sa
+  namespace: x-pipes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: mock-testing-role
+  namespace: x-pipes
+rules:
+  - apiGroups:
+      - tekton.dev
+    resources:
+      - pipelineruns
+    verbs:
+      - list
+      - create
+      - update
+      - delete
+      - patch
+      - watch
+      - get  
+  - apiGroups:
+      - carto.run
+    resources:
+      - runnables
+    verbs:
+      - list
+      - create
+      - update
+      - delete
+      - patch
+      - watch
+      - get  
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: mock-testing-role-binding
+  namespace: x-pipes
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: mock-testing-role
+subjects:
+  - kind: ServiceAccount
+    name: mock-testing-sa     

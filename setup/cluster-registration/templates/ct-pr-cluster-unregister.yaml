@@ -1,0 +1,55 @@
+# A ClusterTemplate instructs the supply chain to instantiate a Kubernetes object 
+# that has no outputs to be supplied to other objects in the chain, for instance, 
+# a resource that deploys a container image that has been built by other ancestor resources.
+
+apiVersion: carto.run/v1alpha1
+kind: ClusterTemplate 
+metadata:
+  name: mock-cluster-unregister
+spec:
+
+  # You should not define the namespace for the resource - it will automatically
+  # be created in the owner namespace. If the namespace is
+  # specified and is not the owner namespace, the resource will
+  # fail to be created.
+  template:
+    apiVersion: tekton.dev/v1
+    kind: PipelineRun
+    metadata:
+      generateName: mock-cluster-unregister-
+    spec:
+      params:
+      - name: provider_id
+        value: ibc
+      - name: account_id
+        value: lab
+      - name: tenant_id
+        value: tst
+      - name: block_num
+        value: "0900"
+      - name: cluster_num
+        value: "01"
+      - name: task_name
+        value: instance-cluster-unregister
+      - name: xterm_user
+        value: msoranno
+      - name: iam_group_list
+        value: admins_imf01,admins_mad01,admins_tst01
+      - name: delivery_group
+        value: tst01
+      pipelineRef:
+        name: instance-cluster-unregister
+      taskRunTemplate:
+        serviceAccountName: cicd-pipelines-sa
+      timeouts:
+        pipeline: 1h0m0s
+      workspaces:
+      - name: cicd-cache
+        persistentVolumeClaim:
+          claimName: x-cicd-cache
+  # Lifecycle specifies whether template modifications should
+  # result in originally created objects being updated (`mutable`)
+  # or in new objects created alongside original objects
+  # (`immutable` or `tekton`).
+  # Tekton taskruns and pipelineruns cannot be updated  
+  lifecycle: tekton

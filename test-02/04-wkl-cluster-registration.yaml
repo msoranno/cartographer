@@ -1,0 +1,39 @@
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: mock-cluster-register-process
+  namespace: x-pipes
+  labels:
+    workload-type: cluster-register-unregister
+spec:
+  params:
+    - name: provider_id
+      value: ibc #0
+    - name: cluster_type
+      value: k8s #1
+    - name: account_id
+      value: lab #2
+    - name: tenant_id
+      value: tst #3
+    - name: block_num
+      value: "0900" #4
+    - name: cluster_num
+      value: "01" #5
+    - name: task_name_register
+      value: instance-cluster-register #6
+    - name: task_name_unregister
+      value: instance-cluster-unregister #7
+    - name: xterm_user
+      value: msoranno #8
+    - name: iam_group_list
+      value: admins_imf01,admins_mad01,admins_tst01 #9
+    - name: delivery_group
+      value: tst01 #10
+    - name: sa
+      value: cicd-pipelines-sa #11
+    - name: pvc
+      value: cicd-cache #12
+  serviceAccountName: mock-testing-sa
+
+
+

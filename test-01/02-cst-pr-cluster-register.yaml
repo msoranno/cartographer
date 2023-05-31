@@ -1,0 +1,32 @@
+
+apiVersion: carto.run/v1alpha1
+kind: ClusterSourceTemplate 
+metadata:
+  name: mock-cluster-register
+spec:
+  # You should not define the namespace for the resource - it will automatically
+  # be created in the owner namespace. If the namespace is
+  # specified and is not the owner namespace, the resource will
+  # fail to be created.
+  template:
+    apiVersion: carto.run/v1alpha1
+    kind: Runnable
+    metadata:
+      name: mock-cluster-register-runnable
+    spec:
+      runTemplateRef:
+        name: mock-cluster-register
+      serviceAccountName: mock-testing-sa
+      inputs:
+        provider_id: $(workload.spec.params[0].value)$
+        cluster_type: $(workload.spec.params[1].value)$
+        account_id: $(workload.spec.params[2].value)$
+        tenant_id: $(workload.spec.params[3].value)$
+        block_num: $(workload.spec.params[4].value)$
+        cluster_num: $(workload.spec.params[5].value)$
+        task_name: $(workload.spec.params[6].value)$
+        xterm_user: $(workload.spec.params[7].value)$
+        iam_group_list: $(workload.spec.params[8].value)$
+        delivery_group: $(workload.spec.params[9].value)$
+  urlPath: .status.outputs.provider_id
+  revisionPath: .status.outputs.cluster_type

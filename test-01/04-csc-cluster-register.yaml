@@ -1,0 +1,19 @@
+apiVersion: carto.run/v1alpha1
+kind: ClusterSupplyChain
+metadata:
+  name: mock-cluster-register-unregister
+spec:
+  selector:
+    workload-type: cluster-register-unregister
+  resources:
+    - name: cluster-register
+      templateRef:
+        kind: ClusterSourceTemplate
+        name: mock-cluster-register
+    - name: cluster-unregister
+      templateRef:
+        kind: ClusterTemplate
+        name: mock-cluster-unregister
+      sources:
+        - resource: cluster-register
+          name: mock-cluster-register

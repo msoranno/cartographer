@@ -1,0 +1,44 @@
+apiVersion: carto.run/v1alpha1
+kind: ClusterRunTemplate
+metadata:
+  name: mock-cluster-register
+spec:
+  template:
+    apiVersion: tekton.dev/v1
+    kind: PipelineRun
+    metadata:
+      generateName: mock-cluster-register-piperun-
+    spec:
+      params:
+      - name: provider_id
+        value: $(runnable.spec.inputs.provider_id)$
+      - name: cluster_type
+        value: $(runnable.spec.inputs.cluster_type)$
+      - name: account_id
+        value: $(runnable.spec.inputs.account_id)$
+      - name: tenant_id
+        value: $(runnable.spec.inputs.tenant_id)$
+      - name: block_num
+        value: $(runnable.spec.inputs.block_num)$
+      - name: cluster_num
+        value: $(runnable.spec.inputs.cluster_num)$
+      - name: task_name
+        value: $(runnable.spec.inputs.task_name)$
+      - name: xterm_user
+        value: $(runnable.spec.inputs.xterm_user)$
+      - name: iam_group_list
+        value: $(runnable.spec.inputs.iam_group_list)$
+      - name: delivery_group
+        value: $(runnable.spec.inputs.delivery_group)$
+      pipelineRef:
+        name: instance-cluster-register
+      taskRunTemplate:
+        serviceAccountName: cicd-pipelines-sa
+      timeouts:
+        pipeline: 1h0m0s
+      workspaces:
+      - name: cicd-cache
+        persistentVolumeClaim:
+          claimName: x-cicd-cache
+  outputs:
+    maraco: status.conditions[?(@.reason=="Succeeded")].status

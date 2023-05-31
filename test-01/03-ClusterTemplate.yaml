@@ -1,0 +1,41 @@
+apiVersion: carto.run/v1alpha1
+kind: ClusterTemplate
+metadata:
+  name: mock-cluster-unregister
+spec:
+  lifecycle: tekton
+  template:
+    apiVersion: tekton.dev/v1
+    kind: PipelineRun
+    metadata:
+      generateName: mock-cluster-unregister-run-
+    spec:
+      params:
+      - name: provider_id
+        value: ibc
+      - name: account_id
+        value: lab
+      - name: tenant_id
+        value: tst
+      - name: block_num
+        value: "0900"
+      - name: cluster_num
+        value: "01"
+      - name: task_name
+        value: instance-cluster-unregister
+      - name: xterm_user
+        value: msoranno
+      - name: iam_group_list
+        value: admins_imf01,admins_mad01,admins_tst01
+      - name: delivery_group
+        value: tst01
+      pipelineRef:
+        name: instance-cluster-unregister
+      taskRunTemplate:
+        serviceAccountName: cicd-pipelines-sa
+      timeouts:
+        pipeline: 1h0m0s
+      workspaces:
+      - name: cicd-cache
+        persistentVolumeClaim:
+          claimName: x-cicd-cache
