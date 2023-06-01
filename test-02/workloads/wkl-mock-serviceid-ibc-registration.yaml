@@ -1,0 +1,41 @@
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: mock-serviceid-ibc
+  namespace: x-pipes
+  labels:
+    workload-type: serviceid-register-unregister
+spec:
+  params:
+  #---------------------------------------------------------------------
+  # serviceid register and unregister
+  #---------------------------------------------------------------------
+    - name: operation-register
+      value: register #00
+    - name: service_id_type
+      value: devops #01
+    - name: account_id
+      value: lab #02
+    - name: tenant_id
+      value: tst #03
+    - name: provider_id
+      value: ibc #04
+    - name: provider_account_id
+      value: "12345" #05
+    - name: additional_config_register  #06
+      value: '{"account_id":"lab","executer_iam_group_list":"admins_imf01,admins_tst01","executer_name":"msoranno","execution_id":"12345","log_level":"10","operation":"register","provider_account_id":"12345","provider_account_is_managed":true,"provider_account_name":"Just
+        for testing","provider_id":"ibc","service_id_api_key":"00001111111","service_id_type":"devops","task_name":"service-id","tenant_id":"tst"}'
+    - name: sa
+      value: cicd-pipelines-sa #07
+    - name: pipeline
+      value: service-id #08
+    - name: operation-unregister
+      value: unregister #09
+    - name: additional_config_unregister  #10
+      value: '{"account_id":"lab","executer_iam_group_list":"admins_imf01,admins_tst01","executer_name":"msoranno","execution_id":"12345","log_level":"10","operation":"unregister","provider_account_id":"12345","provider_account_name":"Just
+          for testing","provider_id":"ibc","service_id_type":"devops","task_name":"service-id","tenant_id":"tst"}'
+
+  serviceAccountName: mock-testing-sa
+
+
+

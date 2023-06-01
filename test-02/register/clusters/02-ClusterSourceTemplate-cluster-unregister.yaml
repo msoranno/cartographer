@@ -1,0 +1,43 @@
+apiVersion: carto.run/v1alpha1
+kind: ClusterSourceTemplate
+metadata:
+  name: mock-cluster-unregister
+spec:
+  lifecycle: tekton
+  urlPath: status.pipelineSpec.tasks[10].params[0].value
+  revisionPath: status.pipelineSpec.tasks[10].params[1].value
+  template:
+    apiVersion: tekton.dev/v1
+    kind: PipelineRun
+    metadata:
+      generateName: $(workload.metadata.name)$-unregister-
+    spec:
+      params:
+      - name: provider_id
+        value: $(workload.spec.params[0].value)$
+      - name: account_id
+        value: $(workload.spec.params[2].value)$
+      - name: tenant_id
+        value: $(workload.spec.params[3].value)$
+      - name: block_num
+        value: "$(workload.spec.params[4].value)$"
+      - name: cluster_num
+        value: "$(workload.spec.params[5].value)$"
+      - name: task_name
+        value: $(workload.spec.params[7].value)$
+      - name: xterm_user
+        value: $(workload.spec.params[8].value)$
+      - name: iam_group_list
+        value: $(workload.spec.params[9].value)$
+      - name: delivery_group
+        value: $(workload.spec.params[10].value)$
+      - name: fake
+        value: $(sources.mock-cluster-register.url)$ # This value force the waitting, even when is not used.
+      pipelineRef:
+        name: $(workload.spec.params[7].value)$
+      taskRunTemplate:
+        serviceAccountName: $(workload.spec.params[11].value)$
+      workspaces:
+      - name: $(workload.spec.params[12].value)$
+        persistentVolumeClaim:
+          claimName: x-$(workload.spec.params[12].value)$

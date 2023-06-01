@@ -1,0 +1,93 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  creationTimestamp: "2023-06-01T14:58:20Z"
+  generateName: service-id-
+  generation: 1
+  labels:
+    app.iscp/component: x-cicd-pipelines
+    app.iscp/managed-by: iscp
+    app.iscp/management: platform
+    tekton.dev/execution-id: "12345"
+    tekton.dev/pipeline: service-id
+    triggers.tekton.dev/eventlistener: xd-listener
+    triggers.tekton.dev/trigger: service-id
+    triggers.tekton.dev/triggers-eventid: 159d1448-6eb6-4599-9a11-dab534268723
+  name: service-id-qp4hn
+  namespace: x-pipes
+  resourceVersion: "327221870"
+  uid: 6fb7f9ac-021a-4d3f-93db-ca2360560b57
+spec:
+  params:
+  - name: operation
+    value: register
+  - name: service_id_type
+    value: devops
+  - name: account_id
+    value: lab
+  - name: tenant_id
+    value: tst
+  - name: provider_id
+    value: aws
+  - name: provider_account_id
+    value: "12345"
+  - name: additional_config
+    value: '{"account_id":"lab","executer_iam_group_list":"admins_imf01,admins_tst01","executer_name":"msoranno","execution_id":"12345","log_level":"10","operation":"register","provider_account_id":"12345","provider_account_is_managed":true,"provider_account_name":"Just
+      for testing","provider_id":"aws","service_id_access_key_id":"zzzzzzzzzzz","service_id_secret_access_key":"aaaaaaaaaaa","service_id_type":"devops","task_name":"service-id","tenant_id":"tst"}'
+  pipelineRef:
+    name: service-id
+  taskRunTemplate:
+    serviceAccountName: cicd-pipelines-sa
+  timeouts:
+    pipeline: 1h0m0s
+status:
+  childReferences:
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: service-id-qp4hn-service-id
+    pipelineTaskName: service-id
+  completionTime: "2023-06-01T14:58:32Z"
+  conditions:
+  - lastTransitionTime: "2023-06-01T14:58:32Z"
+    message: 'Tasks Completed: 1 (Failed: 0, Cancelled 0), Skipped: 0'
+    reason: Succeeded
+    status: "True"
+    type: Succeeded
+  pipelineSpec:
+    params:
+    - name: operation
+      type: string
+    - name: service_id_type
+      type: string
+    - name: account_id
+      type: string
+    - name: tenant_id
+      type: string
+    - name: provider_id
+      type: string
+    - name: provider_account_id
+      type: string
+    - name: additional_config
+      type: string
+    tasks:
+    - name: service-id
+      params:
+      - name: operation
+        value: register
+      - name: service_id_type
+        value: devops
+      - name: account_id
+        value: lab
+      - name: tenant_id
+        value: tst
+      - name: provider_id
+        value: aws
+      - name: provider_account_id
+        value: "12345"
+      - name: additional_config
+        value: '{"account_id":"lab","executer_iam_group_list":"admins_imf01,admins_tst01","executer_name":"msoranno","execution_id":"12345","log_level":"10","operation":"register","provider_account_id":"12345","provider_account_is_managed":true,"provider_account_name":"Just
+          for testing","provider_id":"aws","service_id_access_key_id":"zzzzzzzzzzz","service_id_secret_access_key":"aaaaaaaaaaa","service_id_type":"devops","task_name":"service-id","tenant_id":"tst"}'
+      taskRef:
+        kind: Task
+        name: service-id
+  startTime: "2023-06-01T14:58:20Z"

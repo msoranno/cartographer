@@ -1,7 +1,7 @@
 apiVersion: carto.run/v1alpha1
 kind: ClusterSourceTemplate
 metadata:
-  name: source
+  name: mock-cluster-register
 spec:
   
   # urlPath and revisionPath, are fixed values that the ClusterSourceTemplate
@@ -17,7 +17,7 @@ spec:
     apiVersion: tekton.dev/v1
     kind: PipelineRun
     metadata:
-      generateName: $(workload.metadata.name)$-on-
+      generateName: $(workload.metadata.name)$-register-
     spec:
       params:
       - name: provider_id

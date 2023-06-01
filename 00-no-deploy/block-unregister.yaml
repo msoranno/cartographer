@@ -1,0 +1,193 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  creationTimestamp: "2023-06-01T15:15:33Z"
+  generateName: instance-block-unregister-
+  generation: 1
+  labels:
+    app.iscp/component: x-cicd-pipelines
+    app.iscp/managed-by: iscp
+    app.iscp/management: platform
+    tekton.dev/execution-id: "12345"
+    tekton.dev/pipeline: instance-block-unregister
+    triggers.tekton.dev/eventlistener: xd-listener
+    triggers.tekton.dev/trigger: instance-block-unregister
+    triggers.tekton.dev/triggers-eventid: 92e639c4-e813-4306-afb8-81be6b4c1875
+  name: instance-block-unregister-lnnr2
+  namespace: x-pipes
+  resourceVersion: "327236831"
+  uid: 97185a21-ebe4-42d6-b48e-511a4b9adfc3
+spec:
+  params:
+  - name: provider_id
+    value: ibc
+  - name: account_id
+    value: lab
+  - name: tenant_id
+    value: tst
+  - name: block_num
+    value: "0900"
+  - name: task_name
+    value: instance-block-unregister
+  - name: xterm_user
+    value: msoranno
+  - name: iam_group_list
+    value: admins_imf01,admins_tst01
+  pipelineRef:
+    name: instance-block-unregister
+  taskRunTemplate:
+    serviceAccountName: cicd-pipelines-sa
+  timeouts:
+    pipeline: 1h0m0s
+  workspaces:
+  - name: cicd-cache
+    persistentVolumeClaim:
+      claimName: x-cicd-cache
+status:
+  childReferences:
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: instance-block-unregister-lnnr2-get-git-x-cicd-scripts
+    pipelineTaskName: get-git-x-cicd-scripts
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: instance-block-unregister-lnnr2-get-git-x-cmdb
+    pipelineTaskName: get-git-x-cmdb
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: instance-block-unregister-lnnr2-redis-integration
+    pipelineTaskName: redis-integration
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: instance-block-unregister-lnnr2-cleanup
+    pipelineTaskName: cleanup
+  completionTime: "2023-06-01T15:16:19Z"
+  conditions:
+  - lastTransitionTime: "2023-06-01T15:16:19Z"
+    message: 'Tasks Completed: 4 (Failed: 0, Cancelled 0), Skipped: 0'
+    reason: Succeeded
+    status: "True"
+    type: Succeeded
+  finallyStartTime: "2023-06-01T15:16:07Z"
+  pipelineSpec:
+    finally:
+    - name: cleanup
+      params:
+      - name: PATH
+        value: 97185a21-ebe4-42d6-b48e-511a4b9adfc3*
+      taskRef:
+        kind: Task
+        name: delete-directory
+      workspaces:
+      - name: volume
+        workspace: cicd-cache
+    params:
+    - description: Provider Id (i.e. ibc,aws,azr,gcp,onp)
+      name: provider_id
+      type: string
+    - default: ""
+      description: Cluster Type Id (i.e. k8s, ocp)
+      name: cluster_type
+      type: string
+    - description: Account Id (i.e. ibm)
+      name: account_id
+      type: string
+    - description: Tenant Id (i.e. dev)
+      name: tenant_id
+      type: string
+    - description: Block Num (i.e. 0001)
+      name: block_num
+      type: string
+    - default: ""
+      description: Cluster Num (i.e. 01)
+      name: cluster_num
+      type: string
+    - description: Name to identify the task
+      name: task_name
+      type: string
+    - description: xterm user
+      name: xterm_user
+      type: string
+    - description: Group list that belongs to xterm user
+      name: iam_group_list
+      type: string
+    - default: v4
+      description: Bootstrap version, platform related (i.e. v4)
+      name: bootstrap_version
+      type: string
+    - default: cluster-unregister
+      description: Action to perform (cluster-unregister)
+      name: operation
+      type: string
+    tasks:
+    - name: get-git-x-cicd-scripts
+      params:
+      - name: SECRET_TOKEN_REF
+        value: x-robot-github
+      - name: HOST
+        value: github.kyndryl.net
+      - name: REPOSITORY
+        value: iscp-dev-eu/iscp-x-cicd-scripts
+      - name: BRANCH
+        value: develop
+      retries: 5
+      taskRef:
+        kind: Task
+        name: git-clone
+      workspaces:
+      - name: repository
+        subPath: 97185a21-ebe4-42d6-b48e-511a4b9adfc3_cicd-scripts
+        workspace: cicd-cache
+    - name: get-git-x-cmdb
+      params:
+      - name: SECRET_TOKEN_REF
+        value: x-robot-github
+      - name: HOST
+        value: github.kyndryl.net
+      - name: REPOSITORY
+        value: iscp-dev-eu/iscp-x-cmdb-lab-eu
+      - name: BRANCH
+        value: develop
+      retries: 5
+      taskRef:
+        kind: Task
+        name: git-clone
+      workspaces:
+      - name: repository
+        subPath: 97185a21-ebe4-42d6-b48e-511a4b9adfc3_cmdb
+        workspace: cicd-cache
+    - name: redis-integration
+      params:
+      - name: bootstrap_version
+        value: v4
+      - name: operation
+        value: cluster-unregister
+      - name: provider_id
+        value: ibc
+      - name: cluster_type
+        value: ""
+      - name: account_id
+        value: lab
+      - name: tenant_id
+        value: tst
+      - name: block_num
+        value: "0900"
+      - name: cluster_num
+        value: ""
+      runAfter:
+      - get-git-x-cicd-scripts
+      - get-git-x-cmdb
+      taskRef:
+        kind: Task
+        name: redis-integration
+      workspaces:
+      - name: git-x-cicd-scripts
+        subPath: 97185a21-ebe4-42d6-b48e-511a4b9adfc3_cicd-scripts
+        workspace: cicd-cache
+      - name: git-x-cmdb
+        subPath: 97185a21-ebe4-42d6-b48e-511a4b9adfc3_cmdb
+        workspace: cicd-cache
+    workspaces:
+    - description: The folder to store data
+      name: cicd-cache
+  startTime: "2023-06-01T15:15:33Z"

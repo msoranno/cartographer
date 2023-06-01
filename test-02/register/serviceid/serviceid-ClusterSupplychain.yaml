@@ -1,0 +1,20 @@
+apiVersion: carto.run/v1alpha1
+kind: ClusterSupplyChain
+metadata:
+  name: mock-serviceid-register-unregister
+spec:
+  selector:
+    workload-type: serviceid-register-unregister
+  resources:
+    - name: serviceid-register
+      templateRef:
+        kind: ClusterSourceTemplate
+        name: mock-serviceid-register
+    - name: serviceid-unregister
+      templateRef:
+        kind: ClusterTemplate
+        name: mock-serviceid-unregister
+      sources:
+        - resource: serviceid-register
+          name: mock-serviceid-register
+

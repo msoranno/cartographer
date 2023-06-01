@@ -1,0 +1,33 @@
+apiVersion: carto.run/v1alpha1
+kind: ClusterTemplate
+metadata:
+  name: mock-serviceid-unregister
+spec:
+  lifecycle: tekton
+  template:
+    apiVersion: tekton.dev/v1
+    kind: PipelineRun
+    metadata:
+      generateName: $(workload.metadata.name)$-unregister-
+    spec:
+      params:
+      - name: operation
+        value: $(workload.spec.params[9].value)$
+      - name: service_id_type
+        value: $(workload.spec.params[1].value)$
+      - name: account_id
+        value: $(workload.spec.params[2].value)$
+      - name: tenant_id
+        value: $(workload.spec.params[3].value)$
+      - name: provider_id
+        value: $(workload.spec.params[4].value)$
+      - name: provider_account_id
+        value: "$(workload.spec.params[5].value)$"
+      - name: additional_config
+        value: "$(workload.spec.params[10].value)$"
+      - name: fake
+        value: $(sources.mock-serviceid-register.url)$ # This value force the waitting, even when is not used.
+      pipelineRef:
+        name: "$(workload.spec.params[8].value)$"
+      taskRunTemplate:
+        serviceAccountName: "$(workload.spec.params[7].value)$"

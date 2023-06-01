@@ -1,12 +1,16 @@
 apiVersion: carto.run/v1alpha1
 kind: Workload
 metadata:
-  name: mock-cluster-register-process
+  name: mock-cluster
   namespace: x-pipes
   labels:
     workload-type: cluster-register-unregister
 spec:
   params:
+  #---------------------------------------------------------------------
+  # Cluster register and unregister
+  #---------------------------------------------------------------------
+
     - name: provider_id
       value: ibc #0
     - name: cluster_type
@@ -33,6 +37,8 @@ spec:
       value: cicd-pipelines-sa #11
     - name: pvc
       value: cicd-cache #12
+    - name: task_name_block_unregister
+      value: instance-block-unregister #13
   serviceAccountName: mock-testing-sa
 
 
