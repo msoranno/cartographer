@@ -1,0 +1,55 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  creationTimestamp: "2023-06-06T11:23:52Z"
+  generateName: cmdb-view-
+  generation: 1
+  labels:
+    app.iscp/component: x-cicd-pipelines
+    app.iscp/managed-by: iscp
+    app.iscp/management: platform
+    tekton.dev/execution-id: b3a5f758-ebda-4733-9765-d87578e9d750
+    tekton.dev/pipeline: cmdb-view
+    triggers.tekton.dev/eventlistener: xd-listener
+    triggers.tekton.dev/trigger: cmdb-view
+    triggers.tekton.dev/triggers-eventid: faf33bab-b40c-4f48-9f48-0b0c6717eca6
+  name: cmdb-view-4srdn
+  namespace: x-pipes
+  resourceVersion: "329406075"
+  uid: f49065e8-5b69-44d1-99a5-6f7d8a7093be
+spec:
+  params:
+  - name: prefix_filter
+    value: ""
+  pipelineRef:
+    name: cmdb-view
+  taskRunTemplate:
+    serviceAccountName: cicd-pipelines-sa
+  timeouts:
+    pipeline: 1h0m0s
+status:
+  childReferences:
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: cmdb-view-4srdn-cmdb-view
+    pipelineTaskName: cmdb-view
+  completionTime: "2023-06-06T11:24:02Z"
+  conditions:
+  - lastTransitionTime: "2023-06-06T11:24:02Z"
+    message: 'Tasks Completed: 1 (Failed: 0, Cancelled 0), Skipped: 0'
+    reason: Succeeded
+    status: "True"
+    type: Succeeded
+  pipelineSpec:
+    params:
+    - name: prefix_filter
+      type: string
+    tasks:
+    - name: cmdb-view
+      params:
+      - name: prefix_filter
+        value: ""
+      taskRef:
+        kind: Task
+        name: cmdb-view
+  startTime: "2023-06-06T11:23:52Z"

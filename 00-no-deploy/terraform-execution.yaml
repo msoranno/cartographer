@@ -1,0 +1,442 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  creationTimestamp: "2023-06-06T16:46:49Z"
+  generateName: tf--apply--iscp-aws-demos-tmpl--
+  generation: 1
+  labels:
+    app.iscp/component: x-cicd
+    app.iscp/managed-by: iscp
+    app.iscp/management: platform
+    tekton.dev/pipeline: terraform-pipeline
+    triggers.tekton.dev/eventlistener: github-listener
+    triggers.tekton.dev/trigger: terraform-trigger
+    triggers.tekton.dev/triggers-eventid: ab876993-8e60-4cd4-8d67-cd3873eaeca2
+  name: tf--apply--iscp-aws-demos-tmpl--46nxm
+  namespace: x-cicd
+  resourceVersion: "329523533"
+  uid: 707f4aee-7aaf-4161-b88b-9ac312e1ee59
+spec:
+  params:
+  - name: cicdFile
+    value: eks.iac.terraform.cicd.yaml
+  - name: deploy_action
+    value: apply
+  - name: deploy_name
+    value: Build EKS
+  - name: deploy_dir
+    value: iac/terraform/eks
+  - name: deploy_method
+    value: terraform
+  - name: deploy_from_release
+    value: develop
+  - name: target_name
+    value: Account 1
+  - name: target_type
+    value: cloud
+  - name: target_id
+    value: 616612519936-aws-lab-tst-admins
+  - name: target_provider
+    value: aws
+  - name: target_workspace
+    value: eks-lab-demo
+  - name: target_stateFileName
+    value: eks-lab-demo-v2.tfstate
+  - name: repo_url
+    value: git@github.kyndryl.net:iscp-dev-eu/iscp-aws-demos-tmpl.git
+  - name: repo_branch
+    value: develop
+  - name: pr_user_login
+    value: miguel-angel-soranno
+  - name: repo_owner
+    value: iscp-dev-eu
+  - name: repo_name
+    value: iscp-aws-demos-tmpl
+  - name: pr_number
+    value: "91"
+  - name: cicd_version
+    value: "1.1"
+  - name: binary_version
+    value: 1.3.7
+  pipelineRef:
+    name: terraform-pipeline
+  taskRunTemplate:
+    podTemplate: {}
+    serviceAccountName: cicd-pipelines-sa
+  timeouts:
+    pipeline: 1h0m0s
+  workspaces:
+  - name: cicd-cache
+    persistentVolumeClaim:
+      claimName: x-cicd-cache
+status:
+  childReferences:
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: tf--apply--iscp-aws-demos-tmpl--46nxm-get-git-release
+    pipelineTaskName: get-git-release
+    whenExpressions:
+    - input: develop
+      operator: notin
+      values:
+      - ""
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: tf--apply--iscp-aws-demos-tmpl--46nxm-get-git-x-cicd-scripts
+    pipelineTaskName: get-git-x-cicd-scripts
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: tf--apply--iscp-aws-demos-tmpl--46nxm-get-git-x-cmdb
+    pipelineTaskName: get-git-x-cmdb
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: tf--apply--iscp-aws-demos-tmpl--46nxm-start-msg
+    pipelineTaskName: start-msg
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: tf--apply--iscp-aws-demos-tmpl--46nxm-control-task
+    pipelineTaskName: control-task
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: tf--apply--iscp-aws-demos-tmpl--46nxm-terraform-task
+    pipelineTaskName: terraform-task
+  conditions:
+  - lastTransitionTime: "2023-06-06T16:47:43Z"
+    message: 'Tasks Completed: 5 (Failed: 0, Cancelled 0), Incomplete: 4, Skipped:
+      1'
+    reason: Running
+    status: Unknown
+    type: Succeeded
+  pipelineSpec:
+    finally:
+    - name: cleanup
+      params:
+      - name: PATH
+        value: 707f4aee-7aaf-4161-b88b-9ac312e1ee59*
+      taskRef:
+        kind: Task
+        name: delete-directory
+      workspaces:
+      - name: volume
+        workspace: cicd-cache
+    params:
+    - description: CICD file
+      name: cicdFile
+      type: string
+    - description: Deployment action to perform
+      name: deploy_action
+      type: string
+    - description: Deployment name
+      name: deploy_name
+      type: string
+    - description: Path to the directory where to find deployment code
+      name: deploy_dir
+      type: string
+    - description: Deployment method to use
+      name: deploy_method
+      type: string
+    - default: ""
+      description: Release version
+      name: deploy_from_release
+      type: string
+    - description: Target name
+      name: target_name
+      type: string
+    - description: Target type
+      name: target_type
+      type: string
+    - description: Cloud provider name
+      name: target_provider
+      type: string
+    - description: Cloud service id subscription
+      name: target_id
+      type: string
+    - description: Terraform workspace
+      name: target_workspace
+      type: string
+    - description: Terraform statefile
+      name: target_stateFileName
+      type: string
+    - description: Repository url
+      name: repo_url
+      type: string
+    - description: Repository branch
+      name: repo_branch
+      type: string
+    - description: pull request user login name
+      name: pr_user_login
+      type: string
+    - description: Repo triggered owner, typically organization
+      name: repo_owner
+      type: string
+    - description: Repo triggered name
+      name: repo_name
+      type: string
+    - description: Triggered pull request number
+      name: pr_number
+      type: string
+    - description: cicd file version
+      name: cicd_version
+      type: string
+    - description: terraform binary required version
+      name: binary_version
+      type: string
+    tasks:
+    - name: get-git-source
+      params:
+      - name: SECRET_TOKEN_REF
+        value: x-robot-github
+      - name: HOST
+        value: github.kyndryl.net
+      - name: REPOSITORY
+        value: iscp-dev-eu/iscp-aws-demos-tmpl
+      - name: BRANCH
+        value: develop
+      retries: 5
+      taskRef:
+        kind: Task
+        name: git-clone
+      when:
+      - input: develop
+        operator: in
+        values:
+        - ""
+      workspaces:
+      - name: repository
+        subPath: 707f4aee-7aaf-4161-b88b-9ac312e1ee59_git-repo
+        workspace: cicd-cache
+    - name: get-git-release
+      params:
+      - name: SECRET_TOKEN_REF
+        value: x-robot-github
+      - name: HOST
+        value: github.kyndryl.net
+      - name: REPOSITORY
+        value: iscp-dev-eu/iscp-aws-demos-tmpl
+      - name: BRANCH
+        value: develop
+      retries: 5
+      taskRef:
+        kind: Task
+        name: git-clone
+      when:
+      - input: develop
+        operator: notin
+        values:
+        - ""
+      workspaces:
+      - name: repository
+        subPath: 707f4aee-7aaf-4161-b88b-9ac312e1ee59_git-repo
+        workspace: cicd-cache
+    - name: get-git-x-cicd-scripts
+      params:
+      - name: SECRET_TOKEN_REF
+        value: x-robot-github
+      - name: HOST
+        value: github.kyndryl.net
+      - name: REPOSITORY
+        value: iscp-dev-eu/iscp-x-cicd-scripts
+      - name: BRANCH
+        value: develop
+      retries: 5
+      taskRef:
+        kind: Task
+        name: git-clone
+      workspaces:
+      - name: repository
+        subPath: 707f4aee-7aaf-4161-b88b-9ac312e1ee59_cicd-scripts
+        workspace: cicd-cache
+    - name: get-git-x-cmdb
+      params:
+      - name: SECRET_TOKEN_REF
+        value: x-robot-github
+      - name: HOST
+        value: github.kyndryl.net
+      - name: REPOSITORY
+        value: iscp-dev-eu/iscp-x-cmdb-lab-eu
+      - name: BRANCH
+        value: develop
+      retries: 5
+      taskRef:
+        kind: Task
+        name: git-clone
+      workspaces:
+      - name: repository
+        subPath: 707f4aee-7aaf-4161-b88b-9ac312e1ee59_cmdb
+        workspace: cicd-cache
+    - name: start-msg
+      params:
+      - name: repo_owner
+        value: iscp-dev-eu
+      - name: repo_name
+        value: iscp-aws-demos-tmpl
+      - name: pr_number
+        value: "91"
+      - name: msg
+        value: '**_**ISCP-CICD** - START action process..._** \n - **Action:** apply\n
+          - **Name:** Build EKS\n - **release:** develop\n - **Target Provider:**
+          aws\n - **Target ID:** 616612519936-aws-lab-tst-admins'
+      runAfter:
+      - get-git-x-cicd-scripts
+      - get-git-x-cmdb
+      - get-git-source
+      - get-git-release
+      taskRef:
+        kind: Task
+        name: send-pr-msg-task
+      workspaces:
+      - name: git-x-cicd-scripts
+        subPath: 707f4aee-7aaf-4161-b88b-9ac312e1ee59_cicd-scripts
+        workspace: cicd-cache
+    - name: control-task
+      params:
+      - name: target_tenantId
+        value: iac_terraform
+      - name: target_blockId
+        value: iac_terraform
+      - name: target_k8sClusterId
+        value: 616612519936-aws-lab-tst-admins
+      - name: target_namespace
+        value: iac_terraform
+      - name: repo_owner
+        value: iscp-dev-eu
+      - name: repo_name
+        value: iscp-aws-demos-tmpl
+      - name: pr_number
+        value: "91"
+      - name: pr_user_login
+        value: miguel-angel-soranno
+      - name: deploy_action
+        value: apply
+      - name: repo_url
+        value: git@github.kyndryl.net:iscp-dev-eu/iscp-aws-demos-tmpl.git
+      - name: repo_branch
+        value: develop
+      - name: pipelinerun_name
+        value: tf--apply--iscp-aws-demos-tmpl--46nxm
+      runAfter:
+      - start-msg
+      taskRef:
+        kind: Task
+        name: control-task
+      workspaces:
+      - name: git-x-cicd-scripts
+        subPath: 707f4aee-7aaf-4161-b88b-9ac312e1ee59_cicd-scripts
+        workspace: cicd-cache
+      - name: cicd-data
+        subPath: 707f4aee-7aaf-4161-b88b-9ac312e1ee59_cicd-data
+        workspace: cicd-cache
+    - name: terraform-task
+      params:
+      - name: cicdFile
+        value: eks.iac.terraform.cicd.yaml
+      - name: deploy_action
+        value: apply
+      - name: deploy_name
+        value: Build EKS
+      - name: deploy_dir
+        value: iac/terraform/eks
+      - name: deploy_method
+        value: terraform
+      - name: deploy_from_release
+        value: develop
+      - name: target_name
+        value: Account 1
+      - name: target_type
+        value: cloud
+      - name: target_id
+        value: 616612519936-aws-lab-tst-admins
+      - name: target_provider
+        value: aws
+      - name: target_workspace
+        value: eks-lab-demo
+      - name: target_stateFileName
+        value: eks-lab-demo-v2.tfstate
+      - name: repo_url
+        value: git@github.kyndryl.net:iscp-dev-eu/iscp-aws-demos-tmpl.git
+      - name: repo_branch
+        value: develop
+      - name: pr_user_login
+        value: miguel-angel-soranno
+      - name: repo_owner
+        value: iscp-dev-eu
+      - name: repo_name
+        value: iscp-aws-demos-tmpl
+      - name: pr_number
+        value: "91"
+      - name: cicd_version
+        value: "1.1"
+      - name: pipelinerun_name
+        value: tf--apply--iscp-aws-demos-tmpl--46nxm
+      - name: binary_version
+        value: 1.3.7
+      runAfter:
+      - control-task
+      taskRef:
+        kind: Task
+        name: terraform-task
+      workspaces:
+      - name: cicd-data
+        subPath: 707f4aee-7aaf-4161-b88b-9ac312e1ee59_cicd-data
+        workspace: cicd-cache
+      - name: git-repo
+        subPath: 707f4aee-7aaf-4161-b88b-9ac312e1ee59_git-repo
+        workspace: cicd-cache
+      - name: git-x-cicd-scripts
+        subPath: 707f4aee-7aaf-4161-b88b-9ac312e1ee59_cicd-scripts
+        workspace: cicd-cache
+      - name: git-x-cmdb
+        subPath: 707f4aee-7aaf-4161-b88b-9ac312e1ee59_cmdb
+        workspace: cicd-cache
+    - name: end-msg
+      params:
+      - name: repo_owner
+        value: iscp-dev-eu
+      - name: repo_name
+        value: iscp-aws-demos-tmpl
+      - name: pr_number
+        value: "91"
+      - name: msg
+        value: '**_**ISCP-CICD** - END action process..._** \n - **Action:** apply\n
+          - **Name:** Build EKS\n - **release:** develop\n - **Target Provider:**
+          aws\n - **Target ID:** 616612519936-aws-lab-tst-admins'
+      runAfter:
+      - terraform-task
+      taskRef:
+        kind: Task
+        name: send-pr-msg-task
+      workspaces:
+      - name: git-x-cicd-scripts
+        subPath: 707f4aee-7aaf-4161-b88b-9ac312e1ee59_cicd-scripts
+        workspace: cicd-cache
+    - name: add-success-label
+      params:
+      - name: repo_owner
+        value: iscp-dev-eu
+      - name: repo_name
+        value: iscp-aws-demos-tmpl
+      - name: pr_number
+        value: "91"
+      - name: label
+        value: apply-SUCCESS
+      runAfter:
+      - end-msg
+      taskRef:
+        kind: Task
+        name: add-label-to-pr
+      workspaces:
+      - name: git-x-cicd-scripts
+        subPath: 707f4aee-7aaf-4161-b88b-9ac312e1ee59_cicd-scripts
+        workspace: cicd-cache
+    workspaces:
+    - description: The folder to store data
+      name: cicd-cache
+  skippedTasks:
+  - name: get-git-source
+    reason: When Expressions evaluated to false
+    whenExpressions:
+    - input: develop
+      operator: in
+      values:
+      - ""
+  startTime: "2023-06-06T16:46:49Z"

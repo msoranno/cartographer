@@ -1,0 +1,97 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  creationTimestamp: "2023-06-06T11:20:23Z"
+  generateName: cmdb-update-
+  generation: 1
+  labels:
+    app.iscp/component: x-cicd-pipelines
+    app.iscp/managed-by: iscp
+    app.iscp/management: platform
+    tekton.dev/execution-id: ad52c2b1-abc1-4a89-827b-998f6e948253
+    tekton.dev/pipeline: cmdb-update
+    triggers.tekton.dev/eventlistener: xd-listener
+    triggers.tekton.dev/trigger: cmdb-update
+    triggers.tekton.dev/triggers-eventid: e2992a8a-b42c-4e24-91e9-b4bb13019528
+  name: cmdb-update-nplqk
+  namespace: x-pipes
+  resourceVersion: "329404611"
+  uid: 26ec15c3-4285-45d0-b63b-30467eec60e0
+spec:
+  pipelineRef:
+    name: cmdb-update
+  taskRunTemplate:
+    serviceAccountName: cicd-pipelines-sa
+  timeouts:
+    pipeline: 1h0m0s
+  workspaces:
+  - name: cicd-cache
+    persistentVolumeClaim:
+      claimName: x-cicd-cache
+status:
+  childReferences:
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: cmdb-update-nplqk-get-git-x-cmdb
+    pipelineTaskName: get-git-x-cmdb
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: cmdb-update-nplqk-cmdb-update
+    pipelineTaskName: cmdb-update
+  - apiVersion: tekton.dev/v1beta1
+    kind: TaskRun
+    name: cmdb-update-nplqk-cleanup
+    pipelineTaskName: cleanup
+  completionTime: "2023-06-06T11:20:55Z"
+  conditions:
+  - lastTransitionTime: "2023-06-06T11:20:55Z"
+    message: 'Tasks Completed: 3 (Failed: 0, Cancelled 0), Skipped: 0'
+    reason: Succeeded
+    status: "True"
+    type: Succeeded
+  finallyStartTime: "2023-06-06T11:20:46Z"
+  pipelineSpec:
+    finally:
+    - name: cleanup
+      params:
+      - name: PATH
+        value: 26ec15c3-4285-45d0-b63b-30467eec60e0*
+      taskRef:
+        kind: Task
+        name: delete-directory
+      workspaces:
+      - name: volume
+        workspace: cicd-cache
+    tasks:
+    - name: get-git-x-cmdb
+      params:
+      - name: SECRET_TOKEN_REF
+        value: x-robot-github
+      - name: HOST
+        value: github.kyndryl.net
+      - name: REPOSITORY
+        value: iscp-dev-eu/iscp-x-cmdb-lab-eu
+      - name: BRANCH
+        value: develop
+      retries: 5
+      taskRef:
+        kind: Task
+        name: git-clone
+      workspaces:
+      - name: repository
+        subPath: 26ec15c3-4285-45d0-b63b-30467eec60e0_cmdb
+        workspace: cicd-cache
+    - name: cmdb-update
+      runAfter:
+      - get-git-x-cmdb
+      taskRef:
+        kind: Task
+        name: cmdb-update
+      workspaces:
+      - name: git-x-cmdb
+        subPath: 26ec15c3-4285-45d0-b63b-30467eec60e0_cmdb
+        workspace: cicd-cache
+    workspaces:
+    - description: The folder to store data
+      name: cicd-cache
+  startTime: "2023-06-06T11:20:23Z"
