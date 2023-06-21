@@ -13,18 +13,18 @@ spec:
       templateRef:
         kind: ClusterSourceTemplate
         name: mock-cluster-register
-    # - name: cluster-unregister
-    #   templateRef:
-    #     kind: ClusterSourceTemplate
-    #     name: mock-cluster-unregister
-    #   sources:
-    #     - resource: cluster-register
-    #       name: mock-cluster-register
-    # - name: block-unregister
-    #   templateRef:
-    #     kind: ClusterTemplate
-    #     name: mock-block-unregister
-    #   sources:
-    #     - resource: cluster-unregister
-    #       name: mock-cluster-unregister
+    - name: cluster-unregister
+      templateRef:
+        kind: ClusterSourceTemplate
+        name: mock-cluster-unregister
+      sources:
+        - resource: cluster-register
+          name: mock-cluster-register
+    - name: block-unregister
+      templateRef:
+        kind: ClusterTemplate
+        name: mock-block-unregister
+      sources:
+        - resource: cluster-unregister
+          name: mock-cluster-unregister
 

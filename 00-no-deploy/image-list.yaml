@@ -1,0 +1,13 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: image-list-7624t
+  namespace: x-pipes
+spec:
+  params:
+  - name: REGISTRY_NAMESPACE
+    value: x-core-base-lab-eu
+  pipelineRef:
+    name: image-list
+  taskRunTemplate:
+    serviceAccountName: cicd-pipelines-sa
