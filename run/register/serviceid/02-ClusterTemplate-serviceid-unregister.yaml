@@ -1,3 +1,6 @@
+# A ClusterTemplate instructs the supply chain to instantiate a Kubernetes object that has no outputs to be supplied to other objects in the chain, 
+# for instance, a resource that deploys a container image that has been built by other ancestor resources.
+
 apiVersion: carto.run/v1alpha1
 kind: ClusterTemplate
 metadata:

@@ -1,3 +1,7 @@
+# The ClusterSourceTemplate requires definition of a urlPath and revisionPath. 
+# ClusterSourceTemplate will update its status to emit url and revision values, which are reflections of the values at the path on the created objects. 
+# The supply chain may make these values available to other resources.
+
 apiVersion: carto.run/v1alpha1
 kind: ClusterSourceTemplate
 metadata:

@@ -1,0 +1,46 @@
+apiVersion: carto.run/v1alpha1
+kind: ClusterSourceTemplate
+metadata:
+  name: mock-cluster-register
+spec:
+  
+  # urlPath and revisionPath, are fixed values that the ClusterSourceTemplate
+  # output. This must be populated with something in order to be consumed by the next
+  # step in the supplyChain, even if the next step does not do anything with it.
+  
+  # urlPath: status.conditions[?(@.reason=="Succeeded")].status
+  # revisionPath: status.conditions[?(@.reason=="Succeeded")].status
+  urlPath: status.pipelineSpec.tasks[9].params[8].value
+  revisionPath: status.pipelineSpec.tasks[9].params[1].value
+  lifecycle: tekton
+  template:
+    apiVersion: tekton.dev/v1
+    kind: PipelineRun
+    metadata:
+      generateName: $(workload.metadata.name)$-register-
+    spec:
+      params:
+      - name: PROVIDER_ID
+        value: $(workload.spec.params[0].value)$
+      - name: CLUSTER_TYPE
+        value: $(workload.spec.params[1].value)$
+      - name: ACCOUNT_ID
+        value: $(workload.spec.params[2].value)$
+      - name: TENANT_ID
+        value: $(workload.spec.params[3].value)$
+      - name: BLOCK_NUM
+        value: "$(workload.spec.params[4].value)$"
+      - name: CLUSTER_NUM
+        value: "$(workload.spec.params[5].value)$"
+      - name: XD_USER_GROUPS
+        value: $(workload.spec.params[9].value)$
+      - name: DELIVERY_GROUP
+        value: $(workload.spec.params[10].value)$
+      pipelineRef:
+        name: $(workload.spec.params[6].value)$
+      taskRunTemplate:
+        serviceAccountName: $(workload.spec.params[11].value)$
+      workspaces:
+      - name: $(workload.spec.params[12].value)$
+        persistentVolumeClaim:
+          claimName: x-$(workload.spec.params[12].value)$

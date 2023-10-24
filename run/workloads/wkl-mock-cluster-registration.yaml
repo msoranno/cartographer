@@ -38,7 +38,9 @@ spec:
     - name: pvc
       value: cicd-cache #12
     - name: task_name_block_unregister
-      value: instance-block-unregister #13
+      value: instance-block-unregister #14
+    - name: delivery_group
+      value: delivery_group #14
   serviceAccountName: mock-testing-sa
 
 
